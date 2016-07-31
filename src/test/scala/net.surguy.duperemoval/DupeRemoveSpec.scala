@@ -32,4 +32,12 @@ class DupeRemoveSpec extends Specification {
     }
   }
 
+  "removing similar lines" should {
+    "remove lines that differ only by case" in {
+      val list = List("one fish", "two fish", "ONE fish", "blue fish")
+      dupeRemover.removeCommonDupes(list).toList mustEqual List("two fish", "blue fish")
+    }
+  }
+
+
 }

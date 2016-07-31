@@ -37,7 +37,7 @@ class DupeRemover(maxLinesBetweenDuplication: Int = 100) {
   }
 
   private[duperemoval] def isSimilar(line: String)(anotherLine: String): Boolean = {
-    line == anotherLine
+    line.toLowerCase == anotherLine.toLowerCase
   }
 
 }
