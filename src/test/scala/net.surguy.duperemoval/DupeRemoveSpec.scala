@@ -6,6 +6,17 @@ class DupeRemoveSpec extends Specification {
 
   val dupeRemover = new DupeRemover()
 
+  "building the list of duplicates" should {
+    "create an empty list if there are no duplicates" in {
+      val list = List("one fish", "two fish", "red fish", "blue fish")
+      dupeRemover.buildDupesList(list) must beEmpty
+    }
+    "create a list containing dupes" in {
+      val list = List("one fish", "two fish", "one fish", "blue fish", "blue fish")
+      dupeRemover.buildDupesList(list) mustEqual List("one fish", "blue fish")
+    }
+  }
+
   "removing duplicates" should {
     "leave a simple list unchanged" in {
       val list = List("one fish", "two fish", "red fish", "blue fish")

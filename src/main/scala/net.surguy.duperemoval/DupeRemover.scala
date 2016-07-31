@@ -14,13 +14,30 @@ class DupeRemover(maxLinesBetweenDuplication: Int = 100) {
     * @return the lines with duplicates removed
     */
   def removeCommonDupes(lines: Iterable[String]): Iterable[String] = {
+    val existingLines = buildDupesList(lines)
+    def inDupesList(line: String): Boolean = existingLines.exists(isSimilar(line))
+
+    lines.filterNot(inDupesList)
+  }
+
+  private[duperemoval] def buildDupesList(lines: Iterable[String]): List[String] = {
     val existingLines = new SizeLimitedHashMap[String](maxLinesBetweenDuplication).withDefaultValue(0)
 
-    def buildDupesList(line: String): Unit = existingLines(line) += 1
-    def inDupesList(line: String): Boolean = existingLines(line) > 1
+    def countLines(line: String): Unit = {
+      existingLines.keys.find(isSimilar(line)) match {
+        case Some(existingLine) =>
+          existingLines(existingLine) +=1
+        case None => existingLines(line) += 1
+      }
+    }
+    lines.foreach(countLines)
 
-    lines.foreach(buildDupesList)
-    lines.filterNot(inDupesList)
+    // Removing lines that aren't actually dupes
+    existingLines.filterNot(_._2 <= 1).keys.toList
+  }
+
+  private[duperemoval] def isSimilar(line: String)(anotherLine: String): Boolean = {
+    line == anotherLine
   }
 
 }
