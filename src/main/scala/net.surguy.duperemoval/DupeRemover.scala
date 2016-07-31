@@ -1,5 +1,7 @@
 package net.surguy.duperemoval
 
+import org.apache.commons.lang3.StringUtils
+
 import scala.collection.mutable
 
 /**
@@ -37,7 +39,8 @@ class DupeRemover(maxLinesBetweenDuplication: Int = 100) {
   }
 
   private[duperemoval] def isSimilar(line: String)(anotherLine: String): Boolean = {
-    line.toLowerCase == anotherLine.toLowerCase
+    val distance = StringUtils.getLevenshteinDistance(line.toLowerCase, anotherLine.toLowerCase, 2)
+    distance >= 0 // Will return -1 if greater than the threshold
   }
 
 }

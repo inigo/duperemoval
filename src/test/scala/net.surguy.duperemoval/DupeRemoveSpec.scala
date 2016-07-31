@@ -37,7 +37,10 @@ class DupeRemoveSpec extends Specification {
       val list = List("one fish", "two fish", "ONE fish", "blue fish")
       dupeRemover.removeCommonDupes(list).toList mustEqual List("two fish", "blue fish")
     }
+    "remove lines that are close by edit distance" in {
+      val list = List("one fish", "two fish", "one fysh", "blue fish")
+      dupeRemover.removeCommonDupes(list).toList mustEqual List("two fish", "blue fish")
+    }
   }
-
 
 }
