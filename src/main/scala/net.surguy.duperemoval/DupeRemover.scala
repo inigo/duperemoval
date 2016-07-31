@@ -6,8 +6,12 @@ import scala.collection.mutable
 
 /**
   * Remove duplicate and almost-duplicate lines from text.
+  *
+  * @param maxLinesBetweenDuplication - the number of lines in the rolling dupe-counting buffer. Increasing this will find dupes that
+  *   are further apart from each other, at the cost of increasing the memory usage.
+  * @param isSimilar - a function that checks if two strings are similar, for example def similar(a: String)(b: String) = { a==b }
   */
-class DupeRemover(maxLinesBetweenDuplication: Int = 100) {
+class DupeRemover(maxLinesBetweenDuplication: Int = 100, isSimilar : (String) => (String) => Boolean = DupeRemover.levenshteinIsSimilar) {
 
   /**
     * Remove duplicate and almost-duplicate lines.
@@ -38,7 +42,11 @@ class DupeRemover(maxLinesBetweenDuplication: Int = 100) {
     existingLines.filterNot(_._2 <= 1).keys.toList
   }
 
-  private[duperemoval] def isSimilar(line: String)(anotherLine: String): Boolean = {
+}
+
+object DupeRemover {
+
+  def levenshteinIsSimilar(line: String)(anotherLine: String): Boolean = {
     val distance = StringUtils.getLevenshteinDistance(line.toLowerCase, anotherLine.toLowerCase, 2)
     distance >= 0 // Will return -1 if greater than the threshold
   }
